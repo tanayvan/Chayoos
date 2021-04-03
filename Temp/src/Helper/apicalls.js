@@ -27,3 +27,19 @@ export const login = (body) => {
       console.log(err);
     });
 };
+export const signup = (body) => {
+  return fetch(`${API}/signin`, {
+    method: "Post",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};

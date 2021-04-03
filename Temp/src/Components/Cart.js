@@ -7,7 +7,7 @@ import CartItem from "./CartItem";
 
 export default function Cart() {
   const history = useHistory();
-  const { cart, setCart } = useContext(cartContext);
+  const { cart, setCart, orderType } = useContext(cartContext);
   const [total, setTotal] = useState(0);
   const cartItems = cart;
 
@@ -127,6 +127,9 @@ export default function Cart() {
                     backgroundColor: Color.green,
                     color: "white",
                     width: "100%",
+                  }}
+                  onClick={() => {
+                    console.log(orderType);
                   }}
                 >
                   Place Order
