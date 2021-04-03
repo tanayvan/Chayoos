@@ -29,12 +29,13 @@ import { Link, useHistory } from "react-router-dom";
 import cartContext from "../context";
 
 export default function Navbar() {
+  const { cart, setOrderType, orderType } = useContext(cartContext);
   const [showSideBar, setShowSideBar] = useState(false);
   const [placeButton, setPlaceButton] = useState("New Delhi");
   const [selectValue, setSelectValue] = useState("");
-  const [showTopDrawer, setShowTopDrawer] = useState(false);
+  const [showTopDrawer, setShowTopDrawer] = useState(!orderType);
+  const [order, setOrder] = useState("Take Away");
   const history = useHistory();
-  const { cart } = useContext(cartContext);
   const list = () => (
     <div
       style={{ width: 250 }}
@@ -103,18 +104,19 @@ export default function Navbar() {
       <RadioGroup
         aria-label="gender"
         name="gender1"
-        // value={value}
-        // onChange={handleChange}
+        value={order}
+        onChange={(event) => setOrder(event.target.value)}
         count={1}
         row
       >
-        <FormControlLabel
-          value="female"
-          control={<Radio />}
-          label="Take Away"
-        />
-        <FormControlLabel value="male" control={<Radio />} label="Dine In" />
-        <FormControlLabel value="other" control={<Radio />} label="Delivery" />
+        {["Take Away", "Dine In", "Delivery"].map((text, index) => (
+          <FormControlLabel
+            key={index.toString()}
+            value={text}
+            control={<Radio />}
+            label={text}
+          />
+        ))}
       </RadioGroup>
       <Container
         maxWidth="lg"
@@ -165,18 +167,26 @@ export default function Navbar() {
           variant="outlined"
           style={{ marginBlock: 10, width: "100%" }}
         >
-          <InputLabel htmlFor="outlined-age-native-simple">Age</InputLabel>
+          <InputLabel htmlFor="outlined-age-native-simple">Branch</InputLabel>
           <Select
             // style={{ fontSize: 14 }}
             // native
             // fullWidth
             value={selectValue}
-            onChange={(event) => setSelectValue(event.target.value)}
-            label="Age"
-            inputProps={{
-              name: "age",
-              id: "outlined-age-native-simple",
+            onChange={(event) => {
+              setSelectValue(event.target.value);
+              setOrderType({
+                city: placeButton,
+                branch: event.target.value,
+                type: order,
+              });
+              setShowTopDrawer(false);
             }}
+            label="Branch"
+            // inputProps={{
+            //   name: "age",
+            //   id: "outlined-age-native-simple",
+            // }}
           >
             {["one", "two", "three"].map((text, index) => (
               <MenuItem key={index.toString()} value={text}>
@@ -216,10 +226,34 @@ export default function Navbar() {
                 <MenuIcon />
               </IconButton>
             </Box>
-            <Typography variant="h6" style={{ flexGrow: 1 }}>
-              Chayoos
-              <Button onClick={() => setShowTopDrawer(true)}>hello</Button>
-            </Typography>
+            <Typography variant="h6">Chayoos</Typography>
+            <div style={{ flexGrow: 1, margin: "0px 10px" }}>
+              <button
+                onClick={() => setShowTopDrawer(true)}
+                style={{
+                  backgroundColor: "rgba(0,0,0,.2)",
+                  border: "none",
+                  outline: "none",
+                  cursor: "pointer",
+                  color: "white",
+                }}
+              >
+                {/* {orderType ? orderType.type : "Take Away" + "\n add"} */}
+                <div style={{ fontSize: 12 }}>
+                  {orderType ? orderType.type : "Take Away"}
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  {orderType ? orderType.branch : ""}
+                  <Icon>expand_more</Icon>
+                </div>
+              </button>
+            </div>
             {/* <Link to="/cart" style={{ color: "white" }}> */}
             <IconButton
               style={{ marginInline: 5 }}

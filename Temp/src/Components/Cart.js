@@ -1,5 +1,5 @@
 import { Button, Container, Grid, Icon, Input, Paper } from "@material-ui/core";
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import Color from "../Config/Color";
 import cartContext from "../context";
@@ -8,15 +8,21 @@ import CartItem from "./CartItem";
 export default function Cart() {
   const history = useHistory();
   const { cart, setCart } = useContext(cartContext);
+  const [total, setTotal] = useState(0);
   const cartItems = cart;
 
   function sum() {
     var total = 0;
-    cartItems.map((cart) => {
-      total = total + cart.product.price;
+    cart.map((item) => {
+      total = total + item.product.price * item.quantity;
     });
     return total;
   }
+
+  useEffect(() => {
+    setTotal(sum());
+  }, [cart]);
+
   // const cartItems = [
   //   {
   //     title: "coffe",
@@ -45,7 +51,7 @@ export default function Cart() {
 
   return (
     <div style={{ flexGrow: 1, margin: 20 }}>
-      {false && (
+      {cart.length == 0 && (
         <Container
           maxWidth="sm"
           style={{
@@ -73,15 +79,16 @@ export default function Cart() {
           </Button>
         </Container>
       )}
-      <Container maxWidth="md" style={{ backgroundColor: "#F4F4F4" }}>
-        <p className="textCenter" style={{ fontSize: 25 }}>
-          My Cart
-        </p>
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={8}>
-            <div className="cartBox">{`Total ${cartItems.length} Items`}</div>
+      {cart.length > 0 && (
+        <Container maxWidth="md" style={{ backgroundColor: "#F4F4F4" }}>
+          <p className="textCenter" style={{ fontSize: 25 }}>
+            My Cart
+          </p>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={8}>
+              <div className="cartBox">{`Total ${cartItems.length} Items`}</div>
 
-            {/* <div
+              {/* <div
                 style={{
                   // flexDirection: "row",
                   justifyContent: "flex-end",
@@ -91,43 +98,44 @@ export default function Cart() {
                 <div>hsf</div>
                
               </div> */}
-            {cartItems.map((item, index) => (
-              <CartItem item={item} index={index} />
-            ))}
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <div className="cartBox" style={{ fontSize: 14 }}>
-              INSTRUCTIONS
-            </div>
-            <div className="cartBox">
-              <input
-                placeholder="Add Instructions"
-                style={{ border: "none", outline: "none" }}
-              />
-            </div>
-            <div
-              className="cartBox"
-              style={{ margin: "10px 0px 0px 0px ", fontSize: 14 }}
-            >
-              {`PRICE DETAIL`}
-            </div>
-            <div className="cartBox">
-              <div style={{ color: "grey" }}>{`₹ ${sum()}`}</div>
-            </div>
-            <div style={{ margin: "10px 0px 0px 0px " }}>
-              <Button
-                style={{
-                  backgroundColor: Color.green,
-                  color: "white",
-                  width: "100%",
-                }}
+              {cartItems.map((item, index) => (
+                <CartItem item={item} index={index} />
+              ))}
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <div className="cartBox" style={{ fontSize: 14 }}>
+                INSTRUCTIONS
+              </div>
+              <div className="cartBox">
+                <input
+                  placeholder="Add Instructions"
+                  style={{ border: "none", outline: "none" }}
+                />
+              </div>
+              <div
+                className="cartBox"
+                style={{ margin: "10px 0px 0px 0px ", fontSize: 14 }}
               >
-                Place Order
-              </Button>
-            </div>
+                {`PRICE DETAIL`}
+              </div>
+              <div className="cartBox">
+                {cart && <div style={{ color: "grey" }}>{`${total}`}</div>}
+              </div>
+              <div style={{ margin: "10px 0px 0px 0px " }}>
+                <Button
+                  style={{
+                    backgroundColor: Color.green,
+                    color: "white",
+                    width: "100%",
+                  }}
+                >
+                  Place Order
+                </Button>
+              </div>
+            </Grid>
           </Grid>
-        </Grid>
-      </Container>
+        </Container>
+      )}
     </div>
   );
 }

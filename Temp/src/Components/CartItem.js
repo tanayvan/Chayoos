@@ -1,4 +1,5 @@
 import { Avatar, Button, Icon } from "@material-ui/core";
+import { Alert } from "@material-ui/lab";
 import React, { useContext, useState } from "react";
 import Color from "../Config/Color";
 import cartContext from "../context";
@@ -14,7 +15,7 @@ export default function CartItem({ item, index }) {
     setCart(cart);
   };
   const addQuantity = () => {
-    let cart_data = cart;
+    let cart_data = [...cart];
 
     cart_data[index].quantity = cart_data[index].quantity + 1;
     setQuantity(quantity + 1);
@@ -23,8 +24,12 @@ export default function CartItem({ item, index }) {
     setCart(cart_data);
   };
   const removeQuantity = () => {
+    if (quantity == 1) {
+      handleRemove();
+      return;
+    }
     if (quantity > 0) {
-      let cart_data = cart;
+      let cart_data = [...cart];
 
       cart_data[index].quantity = cart_data[index].quantity - 1;
 

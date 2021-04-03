@@ -2,7 +2,14 @@ import { Button, Card, CardMedia, Icon } from "@material-ui/core";
 import React from "react";
 import "./My.css";
 
-export default function AppCard({ onAddPress, title, photo, subtitle, price }) {
+export default function AppCard({
+  onAddPress,
+  title,
+  photo,
+  subtitle,
+  price,
+  quantity,
+}) {
   return (
     <Card style={{ maxWidth: "100%" }}>
       {/* <CardMedia
@@ -35,7 +42,7 @@ export default function AppCard({ onAddPress, title, photo, subtitle, price }) {
             }}
             onClick={() => onAddPress()}
           >
-            <Icon>add</Icon>
+            {quantity ? quantity : <Icon>add</Icon>}
           </Button>
         </div>
       </div>

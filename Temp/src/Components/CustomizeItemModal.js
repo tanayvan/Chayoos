@@ -51,6 +51,7 @@ export default function CustomizeItemModal({
       });
     setCart(cart);
     localStorage.setItem("cart", JSON.stringify(cart));
+    closeModal();
   };
 
   return (

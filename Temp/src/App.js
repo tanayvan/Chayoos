@@ -6,7 +6,12 @@ import CartPage from "./Pages/CartPage";
 import LoginPage from "./Pages/LoginPage";
 
 export default function App() {
-  const [cart, setCart] = useState(JSON.parse(localStorage.getItem("cart")));
+  const [cart, setCart] = useState(
+    JSON.parse(localStorage.getItem("cart"))
+      ? JSON.parse(localStorage.getItem("cart"))
+      : []
+  );
+  const [orderType, setOrderType] = useState();
   useEffect(() => {
     if (!localStorage.getItem("cart")) {
       localStorage.setItem("cart", JSON.stringify([]));
@@ -14,7 +19,7 @@ export default function App() {
   }, []);
 
   return (
-    <cartContext.Provider value={{ cart, setCart }}>
+    <cartContext.Provider value={{ cart, setCart, orderType, setOrderType }}>
       <BrowserRouter>
         <Switch>
           <Route exact path="/" component={HomePage} />
