@@ -16,6 +16,7 @@ import {
   Box,
   Button,
   Container,
+  Divider,
   FormControl,
   FormControlLabel,
   InputLabel,
@@ -29,21 +30,33 @@ import { Link, useHistory } from "react-router-dom";
 import cartContext from "../context";
 
 export default function Navbar() {
-  const { cart, setOrderType, orderType } = useContext(cartContext);
+  const { cart, setOrderType, orderType, user, setUser } = useContext(
+    cartContext
+  );
   const [showSideBar, setShowSideBar] = useState(false);
-  const [placeButton, setPlaceButton] = useState("New Delhi");
-  const [selectValue, setSelectValue] = useState("");
+  const [placeButton, setPlaceButton] = useState(
+    orderType ? orderType.city : "New Delhi"
+  );
+  const [selectValue, setSelectValue] = useState(
+    orderType ? orderType.branch : ""
+  );
   const [showTopDrawer, setShowTopDrawer] = useState(!orderType);
-  const [order, setOrder] = useState("Take Away");
+  const [order, setOrder] = useState(orderType ? orderType.type : "Take Away");
   const history = useHistory();
   const list = () => (
     <div
-      style={{ width: 250 }}
+      style={{
+        width: 250,
+        height: "100%",
+        display: "flex",
+        flexFlow: "column",
+        height: "100%",
+      }}
       role="presentation"
       onClick={() => setShowSideBar(false)}
       onKeyDown={() => setShowSideBar(false)}
     >
-      <List>
+      <List style={{ flexGrow: 1 }}>
         <ListItem button key={"Home"}>
           <ListItemIcon>
             <Icon>home</Icon>
@@ -68,12 +81,72 @@ export default function Navbar() {
           </ListItemIcon>
           <ListItemText primary={"My Orders"} />
         </ListItem>
-        <ListItem button key={"Login"} onClick={() => history.push("/login")}>
-          <ListItemIcon>
-            <Icon>login</Icon>
-          </ListItemIcon>
-          <ListItemText primary={"Login"} />
-        </ListItem>
+
+        {!user && (
+          <ListItem button key={"Login"} onClick={() => history.push("/login")}>
+            <ListItemIcon>
+              <Icon>login</Icon>
+            </ListItemIcon>
+            <ListItemText primary={"Login"} />
+          </ListItem>
+        )}
+        {user && (
+          <ListItem
+            style={{
+              position: "absolute",
+              bottom: 0,
+              backgroundColor: "red",
+              color: "white",
+            }}
+            button
+            key={"Logout"}
+            onClick={() => {
+              setUser(null);
+              localStorage.setItem("user", JSON.stringify(""));
+            }}
+          >
+            <ListItemIcon>
+              <Icon style={{ color: "white" }}>logout</Icon>
+            </ListItemIcon>
+            <ListItemText primary={"Logout"} />
+          </ListItem>
+        )}
+
+        {user && user.role == 1 && (
+          <>
+            <Divider />
+            <ListItem
+              button
+              key={"AddProduct"}
+              onClick={() => history.push("/addproduct")}
+            >
+              <ListItemIcon>
+                <Icon>add_box</Icon>
+              </ListItemIcon>
+              <ListItemText primary={"Add Product"} />
+            </ListItem>
+            <ListItem
+              button
+              key={"Add Branch"}
+              onClick={() => history.push("/addbranch")}
+            >
+              <ListItemIcon>
+                <Icon>library_add</Icon>
+              </ListItemIcon>
+              <ListItemText primary={"Add Branch"} />
+            </ListItem>
+            <ListItem
+              button
+              key={"Add City"}
+              onClick={() => history.push("/addcity")}
+            >
+              <ListItemIcon>
+                <Icon>post_add</Icon>
+              </ListItemIcon>
+              <ListItemText primary={"Add City"} />
+            </ListItem>
+          </>
+        )}
       </List>
       {/* <Divider />
       <List>
@@ -105,7 +178,12 @@ export default function Navbar() {
         aria-label="gender"
         name="gender1"
         value={order}
-        onChange={(event) => setOrder(event.target.value)}
+        onChange={(event) => {
+          setOrder(event.target.value);
+          let temp = { ...orderType };
+          temp["type"] = event.target.value;
+          setOrderType(temp);
+        }}
         count={1}
         row
       >
@@ -129,7 +207,9 @@ export default function Navbar() {
           style={{ display: "block" }}
           value={placeButton}
           exclusive
-          onChange={(event, value) => setPlaceButton(value)}
+          onChange={(event, value) => {
+            setPlaceButton(value);
+          }}
           aria-label="text alignment"
         >
           {[
@@ -275,6 +355,7 @@ export default function Navbar() {
         <React.Fragment key={"left"}>
           {/* <Button onClick={() => setShowSideBar(true)}>Left</Button> */}
           <Drawer
+            style={{ display: "flex", flexFlow: "column", height: "100%" }}
             anchor={"left"}
             open={showSideBar}
             onClose={() => setShowSideBar(false)}

@@ -5,8 +5,9 @@ import FormikForm from "./FormikForm";
 import FormInput from "./FormInput";
 import * as yup from "yup";
 import FormSubmit from "./FormSubmit";
-import { login } from "../Helper/apicalls";
+import { signup } from "../Helper/apicalls";
 import { Redirect } from "react-router";
+import ErrorText from "./ErrorText";
 
 export default function Signup() {
   const Schema = yup.object().shape({
@@ -15,11 +16,20 @@ export default function Signup() {
     password: yup.string().required().min(8),
   });
   const [redirect, setRedirect] = useState(false);
+  const [error, setError] = useState();
   const handleSubmit = (values) => {
-    console.log(values);
+    setError("");
+    signup(values).then((data) => {
+      // console.log(data);
+      if (data.err) {
+        setError(data.err);
+        return;
+      }
+      setRedirect(true);
+    });
   };
   if (redirect) {
-    return <Redirect to="/" />;
+    return <Redirect to="/login" />;
   }
   return (
     <div style={{ flexGrow: 1, margin: "20px 0px" }}>
@@ -34,22 +44,22 @@ export default function Signup() {
         <p style={{ fontSize: 25 }}>Sign Up</p>
         {/* <br /> */}
         <p style={{ fontSize: 14 }}>Sign up with your Email</p>
+        <ErrorText visible={error} error={error} />
         <FormikForm
           initialValues={{ email: "", password: "", name: "" }}
           validationSchema={Schema}
           onSubmit={(values) => handleSubmit(values)}
         >
-          {/* <FormInput
+          <FormInput
             feildName="name"
             placeholder="Name"
             variant="outlined"
             fullWidth
             label="Name"
-            type="text"
-          /> */}
+          />
           <FormInput
             feildName="email"
-            placeholder="Email"
+            placeholder="email"
             variant="outlined"
             fullWidth
             label="Email"

@@ -1,25 +1,49 @@
 import { Button, Container, Input, TextField } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Color from "../Config/Color";
 import FormikForm from "./FormikForm";
 import FormInput from "./FormInput";
 import * as yup from "yup";
 import FormSubmit from "./FormSubmit";
 import { login } from "../Helper/apicalls";
-import { Redirect } from "react-router";
+import { Redirect, useHistory } from "react-router";
+import cartContext from "../context";
+import ErrorText from "./ErrorText";
 
 export default function Login() {
+  const { setUser } = useContext(cartContext);
+
+  const history = useHistory();
+
   const Schema = yup.object().shape({
     email: yup.string().email().required(),
     password: yup.string().required().min(8),
   });
   const [redirect, setRedirect] = useState(false);
+  const [error, setError] = useState();
   const handleSubmit = (values) => {
+    setError("");
     login(values).then((data) => {
       if (data.error) {
-        console.log(data.error);
+        setError(data.error);
         return;
       }
+      console.log(data);
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          token: data.token,
+          name: data.user.name,
+          role: data.user.role,
+          id: data.user._id,
+        })
+      );
+      setUser({
+        token: data.token,
+        name: data.user.name,
+        role: data.user.role,
+        id: data.user._id,
+      });
       setRedirect(true);
     });
   };
@@ -39,6 +63,7 @@ export default function Login() {
         <p style={{ fontSize: 25 }}>Login</p>
         {/* <br /> */}
         <p style={{ fontSize: 14 }}>Login with your mobile no.</p>
+        <ErrorText visible={error} error={error} />
         <FormikForm
           initialValues={{ email: "", password: "" }}
           validationSchema={Schema}
@@ -63,6 +88,15 @@ export default function Login() {
         </FormikForm>
 
         <br />
+        <p style={{ color: "grey" }}>
+          Dont have Account ?{" "}
+          <span
+            style={{ color: Color.green, cursor: "pointer" }}
+            onClick={() => history.push("/signup")}
+          >
+            Sign Up
+          </span>
+        </p>
       </Container>
     </div>
   );

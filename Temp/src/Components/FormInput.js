@@ -16,8 +16,11 @@ function FormInput({ feildName, ...otherPerameters }) {
       <TextField
         style={{ margin: "10px 0px" }}
         onChange={(input) => setFieldValue(feildName, input.target.value)}
-        value={values.name}
+        value={values[feildName]}
         onBlur={() => {
+          if (values[feildName]) {
+            setFieldValue(feildName, values[feildName].trim());
+          }
           setFieldTouched(feildName);
         }}
         {...otherPerameters}
