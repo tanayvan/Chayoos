@@ -31,6 +31,7 @@ export default function AddProduct() {
     getAllCategories().then((data) => {
       if (!data.error) {
         setCategoryList(data);
+        console.log(data, "categories");
       } else {
         console.log(data.error);
       }
@@ -65,6 +66,7 @@ export default function AddProduct() {
           <p style={{ fontSize: 25 }}>Add Product</p>
           {/* <br /> */}
           {/* <p style={{ fontSize: 14 }}>Login with your mobile no.</p> */}
+
           <FormikForm
             initialValues={{
               title: "",
@@ -124,12 +126,11 @@ export default function AddProduct() {
               style={{ marginBlock: 10, width: "100%", textAlign: "left" }}
             >
               <InputLabel htmlFor="outlined-age-native-simple">
-                Category{" "}
+                Category
               </InputLabel>
               <Select
                 value={category}
                 onChange={(event) => {
-                  console.log(event.target.value);
                   setError("");
                   setCategory(event.target.value);
                 }}
@@ -137,12 +138,13 @@ export default function AddProduct() {
                 placeholder="Category"
               >
                 {categoryList.map((text, index) => (
-                  <MenuItem key={index.toString()} value={text.id}>
+                  <MenuItem key={index.toString()} value={text._id}>
                     {text.name}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
+
             <FormSubmit>Submit</FormSubmit>
           </FormikForm>
 
