@@ -5,7 +5,7 @@ import {
   MenuItem,
   Select,
 } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Footer from "../Components/Footer";
 import FormikForm from "../Components/FormikForm";
 import FormInput from "../Components/FormInput";
@@ -13,15 +13,30 @@ import FormSubmit from "../Components/FormSubmit";
 import Navbar2 from "../Components/Navbar2";
 import * as yup from "yup";
 import ErrorText from "../Components/ErrorText";
+import { getAllCities, postABranch } from "../Helper/apicalls";
+import cartContext from "../context";
 
 export default function AddBranch() {
   const Schema = yup.object().shape({
     branch: yup.string().required().min(3),
     tables: yup.number().required(),
   });
-
+  useEffect(() => {
+    getAllCities().then((data) => {
+      if (!data.error) {
+        let city = [];
+        data.map((data) => {
+          city.push({ id: data._id, name: data.name });
+        });
+        console.log(data);
+        setCityList(city);
+      }
+    });
+  }, []);
   const [city, setCity] = useState("");
+  const [cityList, setCityList] = useState([]);
   const [error, setError] = useState("");
+  const { user } = useContext(cartContext);
 
   const handleSubmit = (values, resetForm) => {
     if (!city) {
@@ -29,7 +44,20 @@ export default function AddBranch() {
       return;
     }
     values.city = city;
-    console.log(values);
+    const body = {
+      name: values.branch,
+      city: values.city,
+      tables: values.tables,
+    };
+    postABranch(body, user.id, user.token)
+      .then((data) => {
+        if (data.error) {
+          setError(data.error);
+        } else {
+          resetForm();
+        }
+      })
+      .catch((err) => console.log(err));
     resetForm();
   };
 
@@ -73,9 +101,9 @@ export default function AddBranch() {
               label="City"
               placeholder="City"
             >
-              {["one", "two", "three"].map((text, index) => (
-                <MenuItem key={index.toString()} value={text}>
-                  {text}
+              {cityList.map((text, index) => (
+                <MenuItem key={index.toString()} value={text.id}>
+                  {text.name}
                 </MenuItem>
               ))}
             </Select>

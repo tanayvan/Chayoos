@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -28,11 +28,43 @@ import {
 import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
 import { Link, useHistory } from "react-router-dom";
 import cartContext from "../context";
+import { getAllBranches, getAllCities } from "../Helper/apicalls";
 
 export default function Navbar() {
   const { cart, setOrderType, orderType, user, setUser } = useContext(
     cartContext
   );
+  useEffect(() => {
+    getAllCities()
+      .then((data) => {
+        if (data.error) {
+          console.log(data);
+        } else {
+          let city = [];
+          data.map((c) => {
+            city.push(c.name);
+          });
+
+          setCities(city);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    getAllBranches().then((data) => {
+      console.log(data);
+      if (data.error) {
+      } else {
+        let branch = [];
+        data.map((c) => {
+          branch.push({ name: c.name, city: c.city.name });
+        });
+
+        console.log(branch);
+        setBranch(branch);
+      }
+    });
+  }, []);
   const [showSideBar, setShowSideBar] = useState(false);
   const [placeButton, setPlaceButton] = useState(
     orderType ? orderType.city : "New Delhi"
@@ -41,6 +73,8 @@ export default function Navbar() {
     orderType ? orderType.branch : ""
   );
   const [showTopDrawer, setShowTopDrawer] = useState(!orderType);
+  const [cities, setCities] = useState([]);
+  const [branch, setBranch] = useState([]);
   const [order, setOrder] = useState(orderType ? orderType.type : "Take Away");
   const history = useHistory();
   const list = () => (
@@ -145,6 +179,16 @@ export default function Navbar() {
               </ListItemIcon>
               <ListItemText primary={"Add City"} />
             </ListItem>
+            <ListItem
+              button
+              key={"Add City"}
+              onClick={() => history.push("/addcategory")}
+            >
+              <ListItemIcon>
+                <Icon>post_add</Icon>
+              </ListItemIcon>
+              <ListItemText primary={"Add Category"} />
+            </ListItem>
           </>
         )}
       </List>
@@ -212,17 +256,7 @@ export default function Navbar() {
           }}
           aria-label="text alignment"
         >
-          {[
-            "New Delhi",
-            "Gurgaon",
-            "Ghaziabad",
-            "Chnadigarh",
-            "Noida",
-            "Karnal",
-            "Faridabad",
-            "Mumbai",
-            "Banglore",
-          ].map((text, index) => (
+          {cities.map((text, index) => (
             <ToggleButton
               key={text}
               value={text}
@@ -268,11 +302,15 @@ export default function Navbar() {
             //   id: "outlined-age-native-simple",
             // }}
           >
-            {["one", "two", "three"].map((text, index) => (
-              <MenuItem key={index.toString()} value={text}>
-                {text}
-              </MenuItem>
-            ))}
+            {branch.map((text, index) => {
+              if (text.city == placeButton) {
+                return (
+                  <MenuItem key={index.toString()} value={text.name}>
+                    {text.name}
+                  </MenuItem>
+                );
+              }
+            })}
           </Select>
         </FormControl>
       </Container>

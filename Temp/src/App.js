@@ -8,6 +8,7 @@ import Signup from "./Pages/SignupPage";
 import AddProduct from "./Pages/AddProduct";
 import AddCity from "./Pages/AddCity";
 import AddBranch from "./Pages/AddBranch";
+import AddCategory from "./Pages/AddCategory";
 
 export default function App() {
   const [cart, setCart] = useState(
@@ -40,6 +41,7 @@ export default function App() {
           <Route exact path="/addproduct" component={AddProduct} />
           <Route exact path="/addcity" component={AddCity} />
           <Route exact path="/addbranch" component={AddBranch} />
+          <Route exact path="/addcategory" component={AddCategory} />
         </Switch>
       </BrowserRouter>
     </cartContext.Provider>

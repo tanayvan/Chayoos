@@ -1,11 +1,18 @@
-import { Container } from "@material-ui/core";
-import React from "react";
+import {
+  Container,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@material-ui/core";
+import React, { useEffect, useState } from "react";
 import Footer from "../Components/Footer";
 import FormikForm from "../Components/FormikForm";
 import FormInput from "../Components/FormInput";
 import FormSubmit from "../Components/FormSubmit";
 import Navbar2 from "../Components/Navbar2";
 import * as yup from "yup";
+import { getAllCategories } from "../Helper/apicalls";
 
 export default function AddProduct() {
   const Schema = yup.object().shape({
@@ -20,7 +27,19 @@ export default function AddProduct() {
     console.log(values);
     resetForm();
   };
+  useEffect(() => {
+    getAllCategories().then((data) => {
+      if (!data.error) {
+        setCategoryList(data);
+      } else {
+        console.log(data.error);
+      }
+    });
+  }, []);
+  const [category, setCategory] = useState("");
+  const [error, setError] = useState("");
 
+  const [categoryList, setCategoryList] = useState([]);
   return (
     <div
       style={{
@@ -100,6 +119,30 @@ export default function AddProduct() {
               fullWidth
               label="Stock"
             />
+            <FormControl
+              variant="outlined"
+              style={{ marginBlock: 10, width: "100%", textAlign: "left" }}
+            >
+              <InputLabel htmlFor="outlined-age-native-simple">
+                Category{" "}
+              </InputLabel>
+              <Select
+                value={category}
+                onChange={(event) => {
+                  console.log(event.target.value);
+                  setError("");
+                  setCategory(event.target.value);
+                }}
+                label="Category"
+                placeholder="Category"
+              >
+                {categoryList.map((text, index) => (
+                  <MenuItem key={index.toString()} value={text.id}>
+                    {text.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
             <FormSubmit>Submit</FormSubmit>
           </FormikForm>
 

@@ -6,31 +6,28 @@ import FormInput from "../Components/FormInput";
 import FormSubmit from "../Components/FormSubmit";
 import Navbar2 from "../Components/Navbar2";
 import * as yup from "yup";
-import { postACity } from "../Helper/apicalls";
 import cartContext from "../context";
 import ErrorText from "../Components/ErrorText";
+import { postACategory } from "../Helper/apicalls";
 
-export default function AddCity() {
+export default function AddCategory() {
   const Schema = yup.object().shape({
-    city: yup.string().required().min(3),
+    category: yup.string().required().min(3),
   });
   const { user } = useContext(cartContext);
   const [error, setError] = useState("");
 
   const handleSubmit = (values, resetForm) => {
-    console.log(values);
     const body = {
-      name: values.city,
+      name: values.category,
     };
-    postACity(body, user.id, user.token)
-      .then((data) => {
-        if (data.error) {
-          setError(data.error);
-        } else {
-          resetForm();
-        }
-      })
-      .catch((err) => console.log(err));
+    postACategory(body, user.id, user.token).then((data) => {
+      if (data.error) {
+        setError(data.error);
+      } else {
+        resetForm();
+      }
+    });
   };
 
   return (
@@ -55,13 +52,13 @@ export default function AddCity() {
             border: "1px solid #e8e8e8",
           }}
         >
-          <p style={{ fontSize: 25 }}>Add Product</p>
+          <p style={{ fontSize: 25 }}>Add Category</p>
           {/* <br /> */}
           {/* <p style={{ fontSize: 14 }}>Login with your mobile no.</p> */}
           <ErrorText visible={error} error={error} />
           <FormikForm
             initialValues={{
-              city: "",
+              category: "",
             }}
             validationSchema={Schema}
             onSubmit={(values, { resetForm }) => {
@@ -69,11 +66,11 @@ export default function AddCity() {
             }}
           >
             <FormInput
-              feildName="city"
-              placeholder="City name"
+              feildName="category"
+              placeholder="Category"
               variant="outlined"
               fullWidth
-              label="City"
+              label="category"
             />
 
             <FormSubmit>Submit</FormSubmit>

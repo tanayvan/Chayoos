@@ -31,12 +31,16 @@ exports.getCity = (req, res) => {
 };
 
 exports.getAllCity = (req, res) => {
+  console.log("hey");
   City.find({}).exec((err, city) => {
     if (err) {
       return res.status(400).json({
         error: "No City Found",
       });
     }
+    console.log("====================================");
+    console.log(city);
+    console.log("====================================");
     res.json(city);
   });
 };

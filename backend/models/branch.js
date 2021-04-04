@@ -13,6 +13,9 @@ const branchSchema = new mongoose.Schema(
       ref: "City",
       required: true,
     },
+    tables: {
+      type: Number,
+    },
   },
   { timestamps: true }
 );
