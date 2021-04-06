@@ -75,9 +75,10 @@ exports.pushOrderInPurchaseList = (req, res, next) => {
     {
       $push: { purchases: purchases },
     },
-    { new: true },
+    { new: true, useFindAndModify: false },
     (err, purchase) => {
       if (err) {
+        console.log(err);
         return res.status(400).json({
           error: "Unable to save Purchase List",
         });

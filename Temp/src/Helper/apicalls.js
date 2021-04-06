@@ -1,5 +1,5 @@
 //To get Products on HomePage
-const API = "http://localhost:4000/api";
+export const API = "http://localhost:4000/api";
 
 export const getAllProducts = () => {
   return fetch(`${API}/products`, {
@@ -133,6 +133,24 @@ export const createProduct = (userId, token, product) => {
       Authorization: `Bearer ${token}`,
     },
     body: product,
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .catch((err) => console.log(err));
+};
+export const createOrder = (userId, token, body) => {
+  console.log("====================================");
+  console.log(body);
+  console.log("====================================");
+  return fetch(`${API}/order/create/${userId}`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(body),
   })
     .then((response) => {
       return response.json();

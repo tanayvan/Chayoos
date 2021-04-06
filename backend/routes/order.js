@@ -10,6 +10,7 @@ const {
   getAllOrders,
   updateStatus,
   getOrderStatus,
+  makePayment,
 } = require("../controllers/order");
 
 //params
@@ -17,13 +18,7 @@ router.param("userId", getUserById);
 router.param("orderId", getOrderById);
 
 //create
-router.post(
-  "/order/create/:userId",
-  isSignedIn,
-  isAuthenticated,
-  pushOrderInPurchaseList,
-  createOrder
-);
+router.post("/order/create/:userId", isSignedIn, isAuthenticated, createOrder);
 
 //read
 router.get(
@@ -49,5 +44,6 @@ router.put(
   isAdmin,
   updateStatus
 );
+router.post("/order/payment/:userId", isSignedIn, isAuthenticated, makePayment);
 
 module.exports = router;

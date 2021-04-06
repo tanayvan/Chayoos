@@ -6,17 +6,19 @@ const ProductCartSchema = new mongoose.Schema({
     type: ObjectId,
     ref: "Product",
   },
-  name: String,
-  count: Number,
-  price: Number,
+  quantity: Number,
+  size: String,
+  sugar: String,
+  milk: String,
 });
 
 const OrderSchema = new mongoose.Schema(
   {
     products: [ProductCartSchema],
     transaction_id: {},
-    amount: { type: Number },
-    address: String,
+    amount: Number,
+    branch: String,
+    type: String,
     status: {
       type: String,
       default: "Recieved",
@@ -27,6 +29,7 @@ const OrderSchema = new mongoose.Schema(
       type: ObjectId,
       ref: "User",
     },
+    payment: String,
   },
   { timestamps: true }
 );
