@@ -26,7 +26,7 @@ exports.getProductById = (req, res, next, id) => {
 };
 
 exports.createPhotoUrl = async (req, res, next) => {
-  console.log(req.file);
+  console.log(req.file, "Line 29");
   cloudinary.uploader.upload(req.file.path, (err, data) => {
     if (err) {
       console.log(err);

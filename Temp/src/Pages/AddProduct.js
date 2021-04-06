@@ -5,14 +5,15 @@ import {
   MenuItem,
   Select,
 } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Footer from "../Components/Footer";
 import FormikForm from "../Components/FormikForm";
 import FormInput from "../Components/FormInput";
 import FormSubmit from "../Components/FormSubmit";
 import Navbar2 from "../Components/Navbar2";
 import * as yup from "yup";
-import { getAllCategories } from "../Helper/apicalls";
+import { getAllCategories, createProduct } from "../Helper/apicalls";
+import cartContext from "../context";
 
 export default function AddProduct() {
   const Schema = yup.object().shape({
@@ -20,26 +21,38 @@ export default function AddProduct() {
     subtitle: yup.string().required().min(3),
     price: yup.number().required(),
     stock: yup.number().required(),
-    photo: yup.string().required(),
   });
 
   const handleSubmit = (values, resetForm) => {
-    console.log(values);
-    resetForm();
+    const formdata = new FormData();
+    formdata.append("name", values.title);
+    formdata.append("description", values.subtitle);
+    formdata.append("price", values.price);
+    formdata.append("stock", values.stock);
+    formdata.append("category", category);
+    formdata.append("photo", photo);
+    createProduct(user.id, user.token, formdata).then((data) => {
+      if (data.error) {
+        setError(data.error);
+        return;
+      }
+      console.log(data);
+    });
+    // resetForm();
   };
   useEffect(() => {
     getAllCategories().then((data) => {
       if (!data.error) {
         setCategoryList(data);
-        console.log(data, "categories");
       } else {
         console.log(data.error);
       }
     });
   }, []);
   const [category, setCategory] = useState("");
+  const [photo, setPhoto] = useState({});
   const [error, setError] = useState("");
-
+  const { user } = useContext(cartContext);
   const [categoryList, setCategoryList] = useState([]);
   return (
     <div
@@ -72,7 +85,7 @@ export default function AddProduct() {
               title: "",
               subtitle: "",
               price: "",
-              photo: "",
+
               stock: "",
             }}
             validationSchema={Schema}
@@ -107,11 +120,14 @@ export default function AddProduct() {
             />
             <FormInput
               type="file"
-              feildName="photo"
               // placeholder="Price"
               variant="outlined"
               fullWidth
               label="Photo"
+              accept="image"
+              onChange={(event) => {
+                setPhoto(event.target.files[0]);
+              }}
             />
             <FormInput
               type="number"
@@ -130,6 +146,7 @@ export default function AddProduct() {
               </InputLabel>
               <Select
                 value={category}
+                feildName="category"
                 onChange={(event) => {
                   setError("");
                   setCategory(event.target.value);
