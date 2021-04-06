@@ -22,7 +22,6 @@ router.post(
   isSignedIn,
   isAuthenticated,
   pushOrderInPurchaseList,
-  updateStock,
   createOrder
 );
 
