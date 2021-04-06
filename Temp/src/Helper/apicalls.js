@@ -140,9 +140,6 @@ export const createProduct = (userId, token, product) => {
     .catch((err) => console.log(err));
 };
 export const createOrder = (userId, token, body) => {
-  console.log("====================================");
-  console.log(body);
-  console.log("====================================");
   return fetch(`${API}/order/create/${userId}`, {
     method: "POST",
     headers: {
@@ -151,6 +148,22 @@ export const createOrder = (userId, token, body) => {
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(body),
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .catch((err) => console.log(err));
+};
+
+export const getUserOrders = (userid, token) => {
+  console.log(token);
+  return fetch(`${API}/order/${userid}`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
   })
     .then((response) => {
       return response.json();

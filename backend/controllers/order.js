@@ -29,7 +29,7 @@ exports.createOrder = (req, res) => {
 };
 
 exports.getAllOrders = (req, res) => {
-  Order.find()
+  Order.find({ user: req.params.userId })
     .populate("user", "_id name")
     .exec((err, order) => {
       if (err) {

@@ -21,13 +21,7 @@ router.param("orderId", getOrderById);
 router.post("/order/create/:userId", isSignedIn, isAuthenticated, createOrder);
 
 //read
-router.get(
-  "/order/all/:userId",
-  isSignedIn,
-  isAuthenticated,
-  isAdmin,
-  getAllOrders
-);
+router.get("/order/:userId", isSignedIn, isAuthenticated, getAllOrders);
 
 //status of order
 router.get(
