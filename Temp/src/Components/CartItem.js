@@ -46,7 +46,7 @@ export default function CartItem({ item, index }) {
           <div style={{ display: "flex", alignItems: "center", fontSize: 18 }}>
             <Avatar
               variant="square"
-              src="https://images8.alphacoders.com/903/thumb-350-903178.jpg"
+              src={item.product.photo}
               style={{ margin: "0px 5px" }}
             />
             {item.product.name}

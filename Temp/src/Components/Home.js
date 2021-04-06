@@ -69,8 +69,8 @@ export default function Home() {
       </Container>
       {products.length > 0 && (
         <CustomizeItemModal
-          title={products[selected].title}
-          subtitle={products[selected].subtitle}
+          title={products[selected].name}
+          subtitle={products[selected].description}
           price={products[selected].price}
           visible={cartModalVisible}
           closeModal={() => setCartModalVisible(false)}

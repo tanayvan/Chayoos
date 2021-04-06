@@ -5,9 +5,14 @@ import OrderItem from "./OrderItem";
 
 export default function MyOrders() {
   return (
-    <div style={{ flexGrow: 1, margin: 20 }}>
+    <div
+      style={{
+        flexGrow: 1,
+        margin: 20,
+      }}
+    >
       <Container maxWidth="md" style={{ backgroundColor: "#F8F8F8" }}>
-        <p className="textCenter" style={{ fontSize: 25 }}>
+        <p className="textCenter" style={{ fontSize: 25, maring: "10px 0px" }}>
           My Orders
         </p>
         <Order />

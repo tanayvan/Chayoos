@@ -5,7 +5,7 @@ import Color from "../Config/Color";
 import cartContext from "../context";
 import "./My.css";
 
-export default function OrderItem() {
+export default function OrderItem({ item }) {
   return (
     <div className="cartBox">
       <div className="cardDetail" style={{ padding: "0px 10px" }}>
@@ -13,23 +13,28 @@ export default function OrderItem() {
           <div style={{ display: "flex", fontSize: 18 }}>
             <Avatar
               variant="square"
-              src="https://images8.alphacoders.com/903/thumb-350-903178.jpg"
+              src={item.product.photo}
               style={{ margin: "0px 10px", height: 80, width: 80 }}
             />
 
             <div>
-              <div>item Name</div>
+              <div>{item.product.name}</div>
               <div style={{ fontSize: 14, margin: "10px 0px", color: "grey" }}>
-                <span>{`Milk: Regular`}</span>
-                {/* <span>{`Milk: ${item.milk}`}</span>{" "}
-            <span style={{ margin: "0 7px" }}> {` Sugar: ${item.sugar} `}</span>
-            <span style={{ margin: "0 7px" }}> {`Size: ${item.size}`}</span> */}
+                <span>{`Milk: ${item.milk}`}</span>{" "}
+                <span style={{ margin: "0 7px" }}>
+                  {" "}
+                  {` Sugar: ${item.sugar} `}
+                </span>
+                <span style={{ margin: "0 7px" }}> {`Size: ${item.size}`}</span>
               </div>
             </div>
           </div>
         </div>
         <div style={{ alignSelf: "center" }}>
-          <div style={{ textAlign: "center" }}> &#8377; {300}</div>
+          <div style={{ textAlign: "center" }}>
+            {" "}
+            &#8377; {item.product.price}
+          </div>
           <div
             style={{
               backgroundColor: "white",
@@ -51,7 +56,7 @@ export default function OrderItem() {
                 margin: "0px 10px",
               }}
             >
-              {2}
+              {item.quantity}
             </div>
           </div>
         </div>

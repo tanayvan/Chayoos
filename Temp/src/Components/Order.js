@@ -12,8 +12,10 @@ export default function Order() {
             <div>23 march 2020</div>
           </Grid>
           <Grid item xs={6} sm={3}>
-            <div style={{ fontSize: 14, color: "grey" }}>Order Type</div>
-            <div>Dine In</div>
+            <div style={{ fontSize: 14, color: "grey" }}>
+              Branch &amp; Order Type
+            </div>
+            <div> Delhi - Dine In</div>
           </Grid>
           <Grid item xs={6} sm={3}>
             <div style={{ fontSize: 14, color: "grey" }}>Table</div>
@@ -25,7 +27,7 @@ export default function Order() {
           </Grid>
         </Grid>
       </div>
-      <OrderItem />
+      {/* <OrderItem /> */}
     </div>
   );
 }

@@ -87,17 +87,6 @@ export default function Cart() {
           <Grid container spacing={2}>
             <Grid item xs={12} sm={8}>
               <div className="cartBox">{`Total ${cartItems.length} Items`}</div>
-
-              {/* <div
-                style={{
-                  // flexDirection: "row",
-                  justifyContent: "flex-end",
-                  display: "flex",
-                }}
-              >
-                <div>hsf</div>
-               
-              </div> */}
               {cartItems.map((item, index) => (
                 <CartItem item={item} index={index} />
               ))}
@@ -129,10 +118,10 @@ export default function Cart() {
                     width: "100%",
                   }}
                   onClick={() => {
-                    console.log(orderType);
+                    history.push("/checkout");
                   }}
                 >
-                  Place Order
+                  Proceed To Checkout
                 </Button>
               </div>
             </Grid>
