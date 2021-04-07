@@ -5,6 +5,7 @@ import {
   FormControlLabel,
   Grid,
   Icon,
+  IconButton,
   Input,
   Modal,
   Paper,
@@ -27,7 +28,7 @@ export default function Checkout() {
   const [total, setTotal] = useState(0);
   const [isSuccess, setIsSuccess] = useState(false);
   const [tabelBook, setTabelBook] = useState(false);
-  const [tabelNo, setTabelNo] = useState(1);
+  const [tabelNo, setTabelNo] = useState(0);
   const [showTables, setShowTables] = useState(false);
 
   function sum() {
@@ -170,7 +171,7 @@ export default function Checkout() {
                   style={{ color: "grey", cursor: "pointer" }}
                   onClick={() => setShowTables(true)}
                 >
-                  Tabel no. : {tabelNo ? tabelNo : "NA"}
+                  {tabelNo ? `Table no. : ${tabelNo}` : "Click to book table"}
                 </div>
               )}
 
@@ -254,13 +255,26 @@ export default function Checkout() {
                     <Grid item xs={6} sm={4} style={{ padding: 20 }}>
                       <Table
                         reserved={true}
-                        number={1}
+                        admin={false}
+                        number={index + 1}
                         onClick={onTableSelect}
                       />
                     </Grid>
                   ))}
                 </Grid>
               </Container>
+              <div style={{ textAlign: "end", marginRight: 30 }}>
+                <IconButton
+                  style={{ position: "absolute", top: 30 }}
+                  edge="start"
+                  // className={classes.menuButton}
+                  color="inherit"
+                  aria-label="menu"
+                  onClick={() => setShowTables(false)}
+                >
+                  <Icon>close</Icon>
+                </IconButton>
+              </div>
             </div>
           </Modal>
         </Container>

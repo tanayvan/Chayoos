@@ -194,6 +194,16 @@ export default function Navbar() {
               </ListItemIcon>
               <ListItemText primary={"Add Category"} />
             </ListItem>
+            <ListItem
+              button
+              key={"Tables"}
+              onClick={() => history.push("/tables")}
+            >
+              <ListItemIcon>
+                <Icon>table_chart</Icon>
+              </ListItemIcon>
+              <ListItemText primary={"Tables"} />
+            </ListItem>
           </>
         )}
       </List>

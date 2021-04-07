@@ -1,19 +1,18 @@
 import React from "react";
 import tableGrey from "../Config/table.svg";
 import tableGreen from "../Config/tableGreen.svg";
-import tableOutline from "../Config/tableOutline.svg";
 
-export default function Table({ reserved, onClick, number }) {
+export default function Table({ reserved, onClick, number, admin }) {
   return (
     <div
       onClick={() => {
-        if (!reserved) {
+        if (!reserved || admin) {
           onClick(number);
         }
       }}
       style={{
         position: "relative",
-        cursor: reserved ? "not-allowed" : "pointer",
+        cursor: reserved && !admin ? "not-allowed" : "pointer",
       }}
     >
       <div

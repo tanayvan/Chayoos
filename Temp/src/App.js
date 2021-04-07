@@ -11,6 +11,7 @@ import AddBranch from "./Pages/AddBranch";
 import AddCategory from "./Pages/AddCategory";
 import MyOrdersPage from "./Pages/MyOrdersPage";
 import CheckoutPage from "./Pages/CheckoutPage";
+import Tables from "./Pages/Tables";
 
 export default function App() {
   const [cart, setCart] = useState(
@@ -46,6 +47,7 @@ export default function App() {
           <Route exact path="/addcategory" component={AddCategory} />
           <Route exact path="/myorders" component={MyOrdersPage} />
           <Route exact path="/checkout" component={CheckoutPage} />
+          <Route exact path="/tables" component={Tables} />
         </Switch>
       </BrowserRouter>
     </cartContext.Provider>
