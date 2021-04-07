@@ -10,6 +10,9 @@ export default function HomePage() {
         backgroundImage: `url("https://cdn.europosters.eu/image/1300/wall-murals/brick-wall-white-312x219-cm-130g-m2-vlies-non-woven-i39966.jpg")`,
         backgroundRepeat: "repeat",
         backgroundAttachment: "fixed",
+        display: "flex",
+        flexFlow: "column",
+        height: "100%",
         // backgroundSize: ,
       }}
     >

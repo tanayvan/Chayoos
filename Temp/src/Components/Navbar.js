@@ -25,7 +25,7 @@ import {
   RadioGroup,
   Select,
 } from "@material-ui/core";
-import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
+import { Alert, ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
 import { Link, useHistory } from "react-router-dom";
 import cartContext from "../context";
 import { getAllBranches, getAllCities } from "../Helper/apicalls";
@@ -52,7 +52,6 @@ export default function Navbar() {
         console.log(err);
       });
     getAllBranches().then((data) => {
-      console.log(data);
       if (data.error) {
       } else {
         let branch = [];
@@ -73,6 +72,7 @@ export default function Navbar() {
     orderType ? orderType.branch : ""
   );
   const [showTopDrawer, setShowTopDrawer] = useState(!orderType);
+  const [showError, setShowError] = useState(false);
   const [cities, setCities] = useState([]);
   const [branch, setBranch] = useState([]);
   const [order, setOrder] = useState(orderType ? orderType.type : "Take Away");
@@ -97,19 +97,24 @@ export default function Navbar() {
           </ListItemIcon>
           <ListItemText primary={"Home"} />
         </ListItem>
-        <ListItem button key={"Profile"}>
-          <ListItemIcon>
-            <Icon>person</Icon>
-          </ListItemIcon>
-          <ListItemText primary={"Profile"} />
-        </ListItem>
-        <ListItem button key={"Cart"}>
+
+        <ListItem button key={"Cart"} onClick={() => history.push("/cart")}>
           <ListItemIcon>
             <Icon>shopping_cart</Icon>
           </ListItemIcon>
           <ListItemText primary={"Cart"} />
         </ListItem>
-        <ListItem button key={"MyOrder"} onClick={() => console.log("hello")}>
+        <ListItem
+          button
+          key={"MyOrder"}
+          onClick={() => {
+            if (user) {
+              history.push("/myorders");
+            } else {
+              history.push("/login");
+            }
+          }}
+        >
           <ListItemIcon>
             <Icon>assignment_turned_in</Icon>
           </ListItemIcon>
@@ -320,7 +325,10 @@ export default function Navbar() {
         // className={classes.menuButton}
         color="inherit"
         aria-label="menu"
-        onClick={() => setShowTopDrawer(false)}
+        onClick={() => {
+          setShowError(true);
+          setShowTopDrawer(false);
+        }}
       >
         <Icon>close</Icon>
       </IconButton>
@@ -405,12 +413,28 @@ export default function Navbar() {
           <Drawer
             anchor="top"
             open={showTopDrawer}
-            onClose={() => setShowTopDrawer(false)}
+            onClose={() => {
+              setShowTopDrawer(false);
+              setShowError(true);
+            }}
           >
             {top()}
           </Drawer>
         </React.Fragment>
       </div>
+      {showError && (!orderType || !orderType.branch) && (
+        <div
+          style={{
+            position: "absolute",
+            bottom: 0,
+            width: "100%",
+          }}
+        >
+          <Alert severity="warning" variant="filled">
+            Please select city and branch
+          </Alert>
+        </div>
+      )}
     </>
   );
 }

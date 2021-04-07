@@ -34,6 +34,7 @@ export default function MyOrders() {
         </p>
         {orders.map((list) => {
           let date = list.updatedAt.split("T")[0];
+          console.log(list);
           return (
             <Order
               amount={list.amount}

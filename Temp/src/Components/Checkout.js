@@ -6,6 +6,7 @@ import {
   Grid,
   Icon,
   Input,
+  Modal,
   Paper,
 } from "@material-ui/core";
 import React, { useContext, useEffect, useState } from "react";
@@ -16,6 +17,10 @@ import cartContext from "../context";
 import CartItem from "./CartItem";
 import OrderItem from "./OrderItem";
 import { createOrder, API } from "../Helper/apicalls";
+import Table from "./Table";
+import tableGrey from "../Config/table.svg";
+import tableGreen from "../Config/tableGreen.svg";
+
 export default function Checkout() {
   const history = useHistory();
   const { cart, orderType, user, setCart } = useContext(cartContext);
@@ -23,6 +28,7 @@ export default function Checkout() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [tabelBook, setTabelBook] = useState(false);
   const [tabelNo, setTabelNo] = useState(1);
+  const [showTables, setShowTables] = useState(false);
 
   function sum() {
     var total = 0;
@@ -94,6 +100,12 @@ export default function Checkout() {
     setTotal(sum());
   }, [cart]);
 
+  const onTableSelect = (index) => {
+    console.log(index);
+    setTabelNo(index);
+    setShowTables(false);
+  };
+
   if (isSuccess) {
     return <Redirect to="/" />;
   }
@@ -143,15 +155,22 @@ export default function Checkout() {
                         padding: "0px 10px",
                       }}
                       checked={tabelBook}
-                      onChange={(event, value) => setTabelBook(value)}
+                      onChange={(event, value) => {
+                        setTabelBook(value);
+                        setShowTables(true);
+                      }}
                     />
                   }
                   label={<div style={{ fontSize: "normal" }}>BOOK TABEL</div>}
                 />
               </div>
               {tabelBook && (
-                <div className="cartBox" style={{ color: "grey" }}>
-                  {tabelNo ? tabelNo : "NA"}
+                <div
+                  className="cartBox"
+                  style={{ color: "grey", cursor: "pointer" }}
+                  onClick={() => setShowTables(true)}
+                >
+                  Tabel no. : {tabelNo ? tabelNo : "NA"}
                 </div>
               )}
 
@@ -190,6 +209,60 @@ export default function Checkout() {
               </div>
             </Grid>
           </Grid>
+          <Modal
+            open={showTables}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <div
+              style={{
+                backgroundColor: "white",
+                maxWidth: 500,
+                outline: "none",
+                height: "90%",
+                overflow: "auto",
+                borderRadius: 5,
+                width: "-webkit-fill-available",
+              }}
+            >
+              <h3 style={{ fontWeight: "400" }} className="textCenter">
+                Select Table to book
+              </h3>
+              <div
+                style={{
+                  display: "flex",
+                  color: "grey",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginBlock: 20,
+                }}
+              >
+                <img src={tableGreen} style={{ width: 20, margin: 5 }} /> :
+                Available
+                <img
+                  src={tableGrey}
+                  style={{ width: 20, marginLeft: 20, marginRight: 5 }}
+                />{" "}
+                : Booked
+              </div>
+              <Container maxWidth="sm">
+                <Grid container spacing={3}>
+                  {[...Array(8)].map((t, index) => (
+                    <Grid item xs={6} sm={4} style={{ padding: 20 }}>
+                      <Table
+                        reserved={true}
+                        number={1}
+                        onClick={onTableSelect}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
+              </Container>
+            </div>
+          </Modal>
         </Container>
       )}
     </div>

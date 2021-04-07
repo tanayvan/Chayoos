@@ -7,7 +7,7 @@ import CartItem from "./CartItem";
 
 export default function Cart() {
   const history = useHistory();
-  const { cart, setCart, orderType } = useContext(cartContext);
+  const { cart, setCart, orderType, user } = useContext(cartContext);
   const [total, setTotal] = useState(0);
   const cartItems = cart;
 
@@ -118,6 +118,10 @@ export default function Cart() {
                     width: "100%",
                   }}
                   onClick={() => {
+                    if (!user) {
+                      history.push("/login");
+                      return;
+                    }
                     history.push("/checkout");
                   }}
                 >
