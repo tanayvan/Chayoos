@@ -16,6 +16,10 @@ const branchSchema = new mongoose.Schema(
     tables: {
       type: Number,
     },
+    reserved_table: {
+      type: Array,
+      default: [],
+    },
   },
   { timestamps: true }
 );

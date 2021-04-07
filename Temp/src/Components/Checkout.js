@@ -17,19 +17,26 @@ import Color from "../Config/Color";
 import cartContext from "../context";
 import CartItem from "./CartItem";
 import OrderItem from "./OrderItem";
-import { createOrder, API } from "../Helper/apicalls";
+import { createOrder, API, getAllBranches } from "../Helper/apicalls";
 import Table from "./Table";
 import tableGrey from "../Config/table.svg";
 import tableGreen from "../Config/tableGreen.svg";
 
+const isReserved = (table, number) => {
+  const value = table.includes(number);
+  console.log(value);
+  return value;
+};
 export default function Checkout() {
   const history = useHistory();
   const { cart, orderType, user, setCart } = useContext(cartContext);
   const [total, setTotal] = useState(0);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [branchDetails, setBranchDetails] = useState();
   const [tabelBook, setTabelBook] = useState(false);
   const [tabelNo, setTabelNo] = useState(0);
   const [showTables, setShowTables] = useState(false);
+  const [instructions, setInstructions] = useState("false");
 
   function sum() {
     var total = 0;
@@ -81,6 +88,8 @@ export default function Checkout() {
       branch: orderType.branch,
       user: user.id,
       payment: payment,
+      table: tabelNo,
+      instructions: instructions,
     };
 
     createOrder(user.id, user.token, body)
@@ -100,9 +109,23 @@ export default function Checkout() {
   useEffect(() => {
     setTotal(sum());
   }, [cart]);
-
+  useEffect(() => {
+    getAllBranches()
+      .then((data) => {
+        console.log(orderType);
+        data.map((d) => {
+          console.log(data);
+          if (d.name === orderType.branch) {
+            setBranchDetails(d);
+          }
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
   const onTableSelect = (index) => {
-    console.log(index);
+    console.log(index + 1);
     setTabelNo(index);
     setShowTables(false);
   };
@@ -132,6 +155,9 @@ export default function Checkout() {
                 <input
                   placeholder="Add Instructions"
                   style={{ border: "none", outline: "none" }}
+                  onChange={(event) => {
+                    setInstructions(event.target.value);
+                  }}
                 />
               </div>
               <div
@@ -251,16 +277,20 @@ export default function Checkout() {
               </div>
               <Container maxWidth="sm">
                 <Grid container spacing={3}>
-                  {[...Array(8)].map((t, index) => (
-                    <Grid item xs={6} sm={4} style={{ padding: 20 }}>
-                      <Table
-                        reserved={true}
-                        admin={false}
-                        number={index + 1}
-                        onClick={onTableSelect}
-                      />
-                    </Grid>
-                  ))}
+                  {branchDetails &&
+                    [...Array(branchDetails.tables)].map((t, index) => (
+                      <Grid item xs={6} sm={4} style={{ padding: 20 }}>
+                        <Table
+                          reserved={isReserved(
+                            branchDetails.reserved_table,
+                            index + 1
+                          )}
+                          admin={false}
+                          number={index + 1}
+                          onClick={onTableSelect}
+                        />
+                      </Grid>
+                    ))}
                 </Grid>
               </Container>
               <div style={{ textAlign: "end", marginRight: 30 }}>

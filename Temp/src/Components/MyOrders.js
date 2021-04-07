@@ -41,6 +41,7 @@ export default function MyOrders() {
               branch={list.branch}
               type={list.type}
               date={date}
+              items={list.products}
             />
           );
         })}

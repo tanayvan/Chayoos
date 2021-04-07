@@ -170,3 +170,34 @@ export const getUserOrders = (userid, token) => {
     })
     .catch((err) => console.log(err));
 };
+
+export const UnReserveATable = (userId, token, body, branchId) => {
+  return fetch(`${API}/branch/unreserve/${userId}/${branchId}`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(body),
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .catch((err) => console.log(err));
+};
+export const ReserveATable = (userId, token, body, branchId) => {
+  return fetch(`${API}/branch/reserve/${userId}/${branchId}`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(body),
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .catch((err) => console.log(err));
+};

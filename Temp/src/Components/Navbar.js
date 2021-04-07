@@ -56,7 +56,12 @@ export default function Navbar() {
       } else {
         let branch = [];
         data.map((c) => {
-          branch.push({ name: c.name, city: c.city.name });
+          branch.push({
+            name: c.name,
+            city: c.city.name,
+            table: c.tables,
+            reserved: c.reserved_table,
+          });
         });
 
         console.log(branch);

@@ -1,6 +1,7 @@
 const { Order, ProductCart } = require("../models/order");
 const stripe = require("stripe")("sk_test_3bxP4RwV3YadRUPFAI84xWoK00nSSCyvnW");
 const uuid = require("uuid/v4");
+const branch = require("../models/branch");
 exports.getOrderById = (req, res, next, id) => {
   Order.findById(id)
     .populate("products.product", "name price")
@@ -16,7 +17,6 @@ exports.getOrderById = (req, res, next, id) => {
 };
 
 exports.createOrder = (req, res) => {
-  console.log(req.body);
   const order = new Order(req.body);
   order.save((err, order) => {
     if (err) {
@@ -24,7 +24,14 @@ exports.createOrder = (req, res) => {
         error: `Failed To create a Order + ${err}`,
       });
     }
-    res.json(order);
+    branch.findOne({ name: req.body.branch }).then((branchD) => {
+      if (req.body.table !== 0) {
+        branchD.reserved_table.push(req.body.table);
+      }
+      branchD.save().then((data) => {
+        res.json(order);
+      });
+    });
   });
 };
 

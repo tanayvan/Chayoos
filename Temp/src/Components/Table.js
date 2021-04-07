@@ -12,7 +12,7 @@ export default function Table({ reserved, onClick, number, admin }) {
       }}
       style={{
         position: "relative",
-        cursor: reserved && !admin ? "not-allowed" : "pointer",
+        cursor: reserved ? "not-allowed" : "pointer",
       }}
     >
       <div

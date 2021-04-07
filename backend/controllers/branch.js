@@ -84,3 +84,30 @@ exports.deleteBranch = (req, res) => {
     });
   });
 };
+
+exports.reserveATable = (req, res) => {
+  const branch = req.branch;
+  branch.reserved_table.push(req.body.table_no);
+  branch.save((err, updatedBranch) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Error updating Branch ",
+      });
+    }
+    res.json(updatedBranch);
+  });
+};
+exports.unReserveATable = (req, res) => {
+  const branch = req.branch;
+  Branch.findByIdAndUpdate(branch._id, {
+    $pull: { reserved_table: req.body.table_no },
+  })
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((err) => {
+      return res.status(400).json({
+        error: "Error updating tables ",
+      });
+    });
+};

@@ -9,6 +9,8 @@ const {
   updateBranchCity,
   updateBranchName,
   deleteBranch,
+  reserveATable,
+  unReserveATable,
 } = require("../controllers/branch");
 const { isAdmin, isAuthenticated, isSignedIn } = require("../controllers/auth");
 const { getUserById } = require("../controllers/user");
@@ -24,6 +26,21 @@ router.post(
   isAuthenticated,
   isAdmin,
   createBranch
+);
+//route to reserve a table
+router.post(
+  "/branch/reserve/:userId/:branchId",
+  isSignedIn,
+  isAuthenticated,
+  reserveATable
+);
+//route to unreserve a table
+router.post(
+  "/branch/unreserve/:userId/:branchId",
+  isSignedIn,
+  isAuthenticated,
+  isAdmin,
+  unReserveATable
 );
 
 //Read Route

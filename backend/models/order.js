@@ -19,6 +19,8 @@ const OrderSchema = new mongoose.Schema(
     amount: Number,
     branch: String,
     type: String,
+    table: Number,
+    instructions: String,
     status: {
       type: String,
       default: "Recieved",

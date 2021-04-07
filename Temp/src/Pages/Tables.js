@@ -7,31 +7,77 @@ import {
   DialogTitle,
   Grid,
 } from "@material-ui/core";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Footer from "../Components/Footer";
 import Navbar2 from "../Components/Navbar2";
 import Table from "../Components/Table";
 import tableGrey from "../Config/table.svg";
 import tableGreen from "../Config/tableGreen.svg";
 import cartContext from "../context";
+import {
+  getAllBranches,
+  UnReserveATable,
+  ReserveATable,
+} from "../Helper/apicalls";
+
+const isReserved = (table, number) => {
+  const value = table.includes(number);
+  console.log(value);
+  return value;
+};
 
 export default function Tables() {
-  const { orderType } = useContext(cartContext);
+  const { orderType, user } = useContext(cartContext);
 
   const [reservedTables, setReservedTables] = useState([2, 4, 6, 8]);
   const [selected, setSelected] = useState(0);
   const [showDialog, setShowDialog] = useState(false);
+  const [branchDetails, setBranchDetails] = useState();
 
-  const alterTable = () => {
-    let temp = [...reservedTables];
-    if (reservedTables.includes(selected)) {
-      temp.splice(temp.indexOf(selected), 1);
-      setReservedTables(temp);
-    } else {
-      temp.push(selected);
-      setReservedTables(temp);
-    }
-    setShowDialog(false);
+  useEffect(() => {
+    getAllBranches()
+      .then((data) => {
+        console.log(orderType);
+        data.map((d) => {
+          console.log(data);
+          if (d.name === orderType.branch) {
+            setBranchDetails(d);
+          }
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+  const handleClick = () => {
+    UnReserveATable(
+      user.id,
+      user.token,
+      { table_no: selected },
+      branchDetails._id
+    ).then((data) => {
+      if (data.error) {
+        console.log("error");
+        return;
+      }
+      console.log(data);
+      setShowDialog(false);
+    });
+  };
+  const handleReserve = () => {
+    ReserveATable(
+      user.id,
+      user.token,
+      { table_no: selected },
+      branchDetails._id
+    ).then((data) => {
+      if (data.error) {
+        console.log("error");
+        return;
+      }
+      console.log(data);
+      setShowDialog(false);
+    });
   };
 
   return (
@@ -73,19 +119,23 @@ export default function Tables() {
             : Booked
           </div>
           <Grid container spacing={4}>
-            {[...Array(10)].map((t, i) => (
-              <Grid item xs={4} style={{ padding: "5%" }}>
-                <Table
-                  admin={true}
-                  reserved={reservedTables.includes(i + 1)}
-                  number={i + 1}
-                  onClick={(index) => {
-                    setSelected(index);
-                    setShowDialog(true);
-                  }}
-                />
-              </Grid>
-            ))}
+            {branchDetails &&
+              [...Array(branchDetails.tables)].map((t, index) => (
+                <Grid item xs={4} style={{ padding: "5%" }}>
+                  <Table
+                    admin={true}
+                    reserved={isReserved(
+                      branchDetails.reserved_table,
+                      index + 1
+                    )}
+                    number={index + 1}
+                    onClick={(index) => {
+                      setSelected(index);
+                      setShowDialog(true);
+                    }}
+                  />
+                </Grid>
+              ))}
           </Grid>
           <Dialog open={showDialog}>
             <DialogTitle id="alert-dialog-title">{"Are you sure?"}</DialogTitle>
@@ -105,7 +155,7 @@ export default function Tables() {
               >
                 NO
               </Button>
-              <Button onClick={() => alterTable()} color="primary" autoFocus>
+              <Button onClick={() => handleClick()} color="primary" autoFocus>
                 Yes
               </Button>
             </DialogActions>
