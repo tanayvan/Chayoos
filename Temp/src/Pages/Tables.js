@@ -10,6 +10,7 @@ import {
 import React, { useContext, useEffect, useState } from "react";
 import Footer from "../Components/Footer";
 import Navbar2 from "../Components/Navbar2";
+import NotAdmin from "../Components/NotAdmin";
 import Table from "../Components/Table";
 import tableGrey from "../Config/table.svg";
 import tableGreen from "../Config/tableGreen.svg";
@@ -20,16 +21,10 @@ import {
   ReserveATable,
 } from "../Helper/apicalls";
 
-const isReserved = (table, number) => {
-  const value = table.includes(number);
-  console.log(value);
-  return value;
-};
-
 export default function Tables() {
   const { orderType, user } = useContext(cartContext);
 
-  const [reservedTables, setReservedTables] = useState([2, 4, 6, 8]);
+  const [reservedTables, setReservedTables] = useState([]);
   const [selected, setSelected] = useState(0);
   const [showDialog, setShowDialog] = useState(false);
   const [branchDetails, setBranchDetails] = useState();
@@ -39,9 +34,10 @@ export default function Tables() {
       .then((data) => {
         console.log(orderType);
         data.map((d) => {
-          console.log(data);
           if (d.name === orderType.branch) {
             setBranchDetails(d);
+
+            setReservedTables(d.reserved_table);
           }
         });
       })
@@ -49,7 +45,16 @@ export default function Tables() {
         console.log(err);
       });
   }, []);
+
   const handleClick = () => {
+    if (reservedTables.includes(selected)) {
+      handleunReserve();
+    } else {
+      handleReserve();
+    }
+  };
+
+  const handleunReserve = () => {
     UnReserveATable(
       user.id,
       user.token,
@@ -60,7 +65,11 @@ export default function Tables() {
         console.log("error");
         return;
       }
-      console.log(data);
+      let temp = [...reservedTables];
+      console.log("before", temp);
+      temp.splice(temp.indexOf(selected), 1);
+      setReservedTables(temp);
+      console.log("after", temp);
       setShowDialog(false);
     });
   };
@@ -75,10 +84,16 @@ export default function Tables() {
         console.log("error");
         return;
       }
-      console.log(data);
+      let temp = [...reservedTables];
+      temp.push(selected);
+      setReservedTables(temp);
       setShowDialog(false);
     });
   };
+
+  if (!user || user.role == 0) {
+    return <NotAdmin />;
+  }
 
   return (
     <div
@@ -124,10 +139,7 @@ export default function Tables() {
                 <Grid item xs={4} style={{ padding: "5%" }}>
                   <Table
                     admin={true}
-                    reserved={isReserved(
-                      branchDetails.reserved_table,
-                      index + 1
-                    )}
+                    reserved={reservedTables.includes(index + 1)}
                     number={index + 1}
                     onClick={(index) => {
                       setSelected(index);
@@ -137,29 +149,33 @@ export default function Tables() {
                 </Grid>
               ))}
           </Grid>
-          <Dialog open={showDialog}>
-            <DialogTitle id="alert-dialog-title">{"Are you sure?"}</DialogTitle>
-            <DialogContent>
-              you are{" "}
-              {reservedTables.includes(selected)
-                ? "making available"
-                : "reserving"}{" "}
-              table number {selected}.
-            </DialogContent>
-            <DialogActions>
-              <Button
-                onClick={() => {
-                  setShowDialog(false);
-                }}
-                color="primary"
-              >
-                NO
-              </Button>
-              <Button onClick={() => handleClick()} color="primary" autoFocus>
-                Yes
-              </Button>
-            </DialogActions>
-          </Dialog>
+          {selected && (
+            <Dialog open={showDialog}>
+              <DialogTitle id="alert-dialog-title">
+                {"Are you sure?"}
+              </DialogTitle>
+              <DialogContent>
+                you are{" "}
+                {reservedTables.includes(selected)
+                  ? "making available"
+                  : "reserving"}{" "}
+                table number {selected}.
+              </DialogContent>
+              <DialogActions>
+                <Button
+                  onClick={() => {
+                    setShowDialog(false);
+                  }}
+                  color="primary"
+                >
+                  NO
+                </Button>
+                <Button onClick={() => handleClick()} color="primary" autoFocus>
+                  Yes
+                </Button>
+              </DialogActions>
+            </Dialog>
+          )}
         </Container>
       </div>
       <Footer />

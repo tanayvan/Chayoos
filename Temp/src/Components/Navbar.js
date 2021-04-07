@@ -26,7 +26,7 @@ import {
   Select,
 } from "@material-ui/core";
 import { Alert, ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
-import { Link, useHistory } from "react-router-dom";
+import { Link, Redirect, useHistory } from "react-router-dom";
 import cartContext from "../context";
 import { getAllBranches, getAllCities } from "../Helper/apicalls";
 
@@ -246,6 +246,11 @@ export default function Navbar() {
           setOrder(event.target.value);
           let temp = { ...orderType };
           temp["type"] = event.target.value;
+          if (event.target.value != "Delivery") {
+            localStorage.setItem("orderType", JSON.stringify(temp));
+          } else {
+            window.location.replace("https://www.zomato.com");
+          }
           setOrderType(temp);
         }}
         count={1}
@@ -314,6 +319,14 @@ export default function Navbar() {
                 branch: event.target.value,
                 type: order,
               });
+              localStorage.setItem(
+                "orderType",
+                JSON.stringify({
+                  city: placeButton,
+                  branch: event.target.value,
+                  type: order,
+                })
+              );
               setShowTopDrawer(false);
             }}
             label="Branch"

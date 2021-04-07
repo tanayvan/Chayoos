@@ -9,6 +9,7 @@ import * as yup from "yup";
 import cartContext from "../context";
 import ErrorText from "../Components/ErrorText";
 import { postACategory } from "../Helper/apicalls";
+import NotAdmin from "../Components/NotAdmin";
 
 export default function AddCategory() {
   const Schema = yup.object().shape({
@@ -29,6 +30,10 @@ export default function AddCategory() {
       }
     });
   };
+
+  if (!user || user.role == 0) {
+    return <NotAdmin />;
+  }
 
   return (
     <div

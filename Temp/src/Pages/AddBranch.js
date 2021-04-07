@@ -15,6 +15,7 @@ import * as yup from "yup";
 import ErrorText from "../Components/ErrorText";
 import { getAllCities, postABranch } from "../Helper/apicalls";
 import cartContext from "../context";
+import NotAdmin from "../Components/NotAdmin";
 
 export default function AddBranch() {
   const Schema = yup.object().shape({
@@ -60,6 +61,10 @@ export default function AddBranch() {
       .catch((err) => console.log(err));
     resetForm();
   };
+
+  if (!user || user.role == 0) {
+    return <NotAdmin />;
+  }
 
   return (
     <div

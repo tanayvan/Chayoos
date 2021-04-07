@@ -9,6 +9,7 @@ import * as yup from "yup";
 import { postACity } from "../Helper/apicalls";
 import cartContext from "../context";
 import ErrorText from "../Components/ErrorText";
+import NotAdmin from "../Components/NotAdmin";
 
 export default function AddCity() {
   const Schema = yup.object().shape({
@@ -32,6 +33,10 @@ export default function AddCity() {
       })
       .catch((err) => console.log(err));
   };
+
+  if (!user || user.role == 0) {
+    return <NotAdmin />;
+  }
 
   return (
     <div

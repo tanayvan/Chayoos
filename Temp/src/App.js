@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import cartContext from "./context";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 import HomePage from "./Pages/HomePage";
 import CartPage from "./Pages/CartPage";
 import LoginPage from "./Pages/LoginPage";
@@ -22,9 +22,13 @@ export default function App() {
   const [user, setUser] = useState(
     JSON.parse(localStorage.getItem("user"))
       ? JSON.parse(localStorage.getItem("user"))
+      : ""
+  );
+  const [orderType, setOrderType] = useState(
+    JSON.parse(localStorage.getItem("orderType"))
+      ? JSON.parse(localStorage.getItem("orderType"))
       : null
   );
-  const [orderType, setOrderType] = useState();
   useEffect(() => {
     if (!localStorage.getItem("cart")) {
       localStorage.setItem("cart", JSON.stringify([]));

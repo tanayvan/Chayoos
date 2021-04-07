@@ -14,6 +14,7 @@ import Navbar2 from "../Components/Navbar2";
 import * as yup from "yup";
 import { getAllCategories, createProduct } from "../Helper/apicalls";
 import cartContext from "../context";
+import NotAdmin from "../Components/NotAdmin";
 
 export default function AddProduct() {
   const Schema = yup.object().shape({
@@ -54,6 +55,11 @@ export default function AddProduct() {
   const [error, setError] = useState("");
   const { user } = useContext(cartContext);
   const [categoryList, setCategoryList] = useState([]);
+
+  if (!user || user.role == 0) {
+    return <NotAdmin />;
+  }
+
   return (
     <div
       style={{
